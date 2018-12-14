@@ -42,6 +42,45 @@ and open the template in the editor.
                 color: white;
             }
 
+            .number_clicked {
+                display: inline-block;
+                width: 100px;
+                height: 110px;
+                background-image: url("assets/number.png");
+                background-size: cover;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 114px;
+                font-size: 60px;
+                color: yellow;
+            }
+
+            .number_solved {
+                display: inline-block;
+                width: 100px;
+                height: 110px;
+                background-image: url("assets/number.png");
+                background-size: cover;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 114px;
+                font-size: 60px;
+                color: green;
+            }
+
+            .number_wrong {
+                display: inline-block;
+                width: 100px;
+                height: 110px;
+                background-image: url("assets/number.png");
+                background-size: cover;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 114px;
+                font-size: 60px;
+                color: red;
+            }
+
             .question {
                 display: inline-block;
                 width: 120px;
@@ -129,64 +168,50 @@ and open the template in the editor.
             </div>
 
 
-
+        
             <div class="row">
                 <div id="solution"></div>
             </div>
      
       
-        <script>
-            var randomNumbers = [0, 0, 0, 0, 0];
+            <script>
+var randomNumbers = [0, 0, 0, 0, 0];
             var randomIndices = [0, 0, 0]
             var sum;
             var lastSum = 0;
             var min = 1;
             var max = 10;
             var solved = false;
+            var numbers = [];
+            var answer = 0;
+
             document.getElementById("role").onclick = function() {
                 roleTheDice();
             };
 
             document.getElementById("solve").onclick = function() {
 
-                var answer = 0;
-                all_answers = document.getElementById("answers").children
 
-                for (var i = 0; i < randomIndices.length; i++) {
 
-                    answer = answer + parseInt(all_answers[i].value);
-                }
                 console.log(answer)
                 if (answer == sum && solved == false) {
+                    console.log("solved ");
+
                     solved = true;
-                    lastSum = lastSum + sum;
+                    lastSum = lastSum + answer;
                     all_numbers = document.getElementById("numbers").children
                     markedNodes = [];
-                    for (var i = 0; i < randomIndices.length; i++) {
-                        marked = false;
-                        for (var j = 0; j < randomNumbers.length; j++) {
-                            if (parseInt(all_answers[i].value) == randomNumbers[j]) {
-                                if (marked == false) {
-                                    if (markedNodes.includes(j) == false) {
-                                        all_numbers[j + 1].style.background = "green"
-                                        marked = true;
-                                        markedNodes.push(j);
-                                    }
-                                }
-                            }
-
-
-                        }
+                    for (var i = 0; i < numbers.length; i++) {
+                        numbers[i].setAttribute("class", "number_solved");
 
                     }
 
                 }
                 else {
 
+                    for (var i = 0; i < numbers.length; i++) {
+                        numbers[i].setAttribute("class", "number_wrong");
 
-                    for (var i = 0; i < randomIndices.length; i++) {
-
-                        all_answers[i].value = "";
                     }
                 }
 
@@ -195,6 +220,7 @@ and open the template in the editor.
 
             function roleTheDice() {
                 solved = false;
+                answer = 0;
                 document.getElementById("numbers").innerHTML = "";
                 document.getElementById("answers").innerHTML = "";
                 randomNumbers = new Array(parseInt(document.getElementById("param_n").value));
@@ -215,15 +241,32 @@ and open the template in the editor.
                     number.setAttribute("class", "number");
                     number.innerHTML = randomNumbers[i];
                     document.getElementById("numbers").appendChild(number);
+                    number.onclick = function() {
+                    this.setAttribute("class", "number_clicked");
+                    number = this.innerHTML;
+                    if(numbers.includes(this)) {
+                        this.setAttribute("class", "number");
+                        answer = answer - Number(number);
+                        console.log(answer);
+
+                    }
+
+                    else {
+                        numbers.push(this);
+                        answer = answer + Number(number);
+                        console.log(answer);
+
+                    }
+                    };
                 }
 
-                for (var i = 0; i < randomIndices.length; i++) {
+              /*  for (var i = 0; i < randomIndices.length; i++) {
 
                     var answer = document.createElement("input");
                     answer.setAttribute("class", "answer");
                     document.getElementById("answers").appendChild(answer);
                 }
-
+            */
                 console.log(randomNumbers);
                 for (var i = 0; i < randomIndices.length; i++) {
                     var chosen = true;
@@ -248,10 +291,6 @@ and open the template in the editor.
                 }
 
                 document.getElementById("sum").innerHTML = sum + lastSum;
-            }
-
-
-
-        </script>
+            }</script>
     </body>
 </html>
